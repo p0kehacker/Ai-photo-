@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Horde Studio — Beauty & Fashion</title>
+<style>
+:root{--bg:#0c0b12;--panel:#171520;--panel2:#211d2b;--line:#332c40;--txt:#f7f2fa;--muted:#a99fb1;--pink:#ed91c5;--purple:#a88af4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px Inter,system-ui,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}
+.app{max-width:1450px;margin:auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:45px;height:45px;border-radius:14px;background:linear-gradient(135deg,#f2a5d4,#8e70e9);display:grid;place-items:center;font-size:24px}
+h1{font-size:20px;margin:0}.brand p,.sub,.note{color:var(--muted)}.brand p{font-size:10px;margin:4px 0}
+.api{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}
+input,select,textarea{width:100%;background:#100e18;color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--purple)}textarea{resize:vertical;min-height:85px;line-height:1.5}
+.api input{width:165px}.tabs{display:flex;gap:5px;background:var(--panel);padding:5px;border-radius:11px;width:max-content;margin-bottom:20px}
+.tab{background:transparent;border:0;padding:11px 17px;border-radius:8px;color:var(--muted);font-weight:650}.tab.active{background:var(--panel2);color:white}
+.layout{display:grid;grid-template-columns:minmax(350px,540px) minmax(0,1fr);gap:18px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;min-width:0}
+h2{font-size:16px;margin:0 0 6px}.sub{font-size:11px;line-height:1.6;margin:0 0 18px}
+.section{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:17px 0 9px;margin-bottom:13px}
+.section strong{font-size:12px}.section span{font-size:10px;color:var(--pink)}
+.field{margin-bottom:14px}.field>label,.rangehead label{display:block;font-size:11px;font-weight:650;margin-bottom:7px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rangehead{display:flex;justify-content:space-between;align-items:center}.rangehead label{margin:0}
+.value{font-size:11px;font-weight:700;color:var(--pink)}
+input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--pink);margin:10px 0 2px}
+.range-note{display:flex;justify-content:space-between;color:var(--muted);font-size:9px}
+.outfit-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:350px;overflow:auto;padding-right:3px}
+.outfit{border:1px solid var(--line);border-radius:8px;background:#100e18;padding:9px;text-align:left;min-height:49px}
+.outfit b{display:block;font-size:10px}.outfit small{font-size:9px;color:var(--muted)}
+.outfit.selected{border-color:var(--pink);background:#302035}
+.primary{width:100%;border:0;border-radius:10px;padding:14px;background:linear-gradient(110deg,#e28bc3,#9875ef);font-weight:750;margin-top:10px}
+.primary:disabled{opacity:.5;cursor:not-allowed}.secondary{border:1px solid var(--line);background:var(--panel2);padding:10px;border-radius:8px;font-size:11px}
+.result{min-height:470px;display:grid;place-items:center;background:radial-gradient(ellipse,#292039,#111019);border:1px dashed #493951;border-radius:11px;overflow:hidden}
+.result img{display:none;max-width:100%;max-height:760px;object-fit:contain}.empty{text-align:center;padding:25px;color:var(--muted)}.empty span{font-size:44px;color:var(--pink)}
+.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}
+.status{display:none;background:#100e18;border:1px solid var(--line);padding:12px;border-radius:9px;margin-top:12px;font-size:11px}.status.show{display:block}
+.progress{height:4px;background:#332c40;border-radius:4px;margin-top:10px}.bar{height:100%;width:0;background:var(--pink)}
+.drop{border:1px dashed #62516e;border-radius:9px;padding:15px;text-align:center;cursor:pointer}.drop img{max-height:150px;max-width:100%;display:none}.drop input{display:none}
+.hidden{display:none!important}.note{font-size:10px;line-height:1.5}footer{text-align:center;color:var(--muted);font-size:10px;margin:25px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}@media(max-width:520px){.app{padding:12px}.panel{padding:14px}.grid2{grid-template-columns:1fr}.tabs{width:100%}.tab{flex:1;padding:10px 5px;font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">✧</div><div><h1>HORDE STUDIO</h1><p>BEAUTY · FASHION · CHARACTER DESIGN</p></div></div>
+ <div class="api">API KEY <input id="apiKey" value="0000000000" aria-label="AI Horde API key"></div>
+</header>
+<nav class="tabs"><button class="tab active" data-tab="create">✧ Character Creator</button><button class="tab" data-tab="edit">◈ Image Editor</button></nav>
+<div class="layout">
+<section class="panel" id="creator">
+ <h2>Character Designer</h2><p class="sub">Design an adult woman, fine-tune her appearance, and build a complete fashion look.</p>
+ <div class="section"><strong>01 · Body proportions</strong><span>CHARACTER</span></div>
+ <div id="bodyControls"></div>
+ <div class="section"><strong>02 · Hair & appearance</strong><span>100 HAIRSTYLES</span></div>
+ <div class="grid2">
+  <div class="field"><label for="hairStyle">Hairstyle</label><select id="hairStyle"></select></div>
+  <div class="field"><label for="hairColor">Hair colour</label><select id="hairColor"><option>Platinum blonde</option><option>Golden blonde</option><option>Honey blonde</option><option>Brunette</option><option>Dark brown</option><option>Jet black</option><option>Auburn</option><option>Redhead</option><option>Silver</option><option>Pastel pink</option><option>Pastel purple</option><option>Rose gold</option><option>Blue-black</option><option>Strawberry blonde</option><option>Champagne blonde</option><option>Beige blonde</option><option>Caramel brown</option><option>Chestnut</option><option>Espresso</option><option>Mahogany</option><option>Copper</option><option>Cherry red</option><option>Lavender</option><option>Silver lilac</option><option>Teal</option></select></div>
+  <div class="field"><label for="eyes">Eye colour</label><select id="eyes"><option>Blue</option><option>Green</option><option>Brown</option><option>Hazel</option><option>Grey</option><option>Amber</option><option>Violet</option><option>Blue-grey</option><option>Green-hazel</option><option>Dark brown</option><option>Light brown</option><option>Sea green</option></select></div>
+  <div class="field"><label for="face">Facial styling</label><select id="face"><option>Classic symmetrical beauty</option><option>Soft romantic features</option><option>Defined cheekbones</option><option>Heart-shaped face</option><option>Editorial high-fashion features</option><option>Vintage screen-star styling</option><option>Soft oval face</option><option>Angular editorial features</option><option>Rounded cheeks</option><option>Delicate jawline</option><option>Strong sculpted jawline</option><option>Classic heart-shaped features</option></select></div>
+ </div>
+ <div class="field">
+  <div class="rangehead"><label for="goldenRatio">Facial golden-ratio harmony</label><span class="value" id="goldenRatioValue">50%</span></div>
+  <input type="range" id="goldenRatio" min="0" max="100" value="50">
+  <div class="range-note"><span>Natural variation</span><span>Highly balanced proportions</span></div>
+  <p class="note">A stylistic prompt control for facial balance, not a scientific measurement or guarantee of beauty.</p>
+ </div>
+ <div class="section"><strong>03 · Makeup studio</strong><span>60 OPTIONS PER CATEGORY</span></div>
+ <div class="grid2" id="makeupControls"></div>
+ <div class="section"><strong>04 · Outfit collection</strong><span id="outfitCount">260 DESIGNS</span></div>
+ <div class="field"><label for="outfitSearch">Find an outfit</label><input id="outfitSearch" placeholder="Search formal, gown, corset, cocktail..."></div>
+ <div class="outfit-grid" id="outfits"></div>
+ <div class="section"><strong>05 · Heels & footwear</strong><span>40 TYPES</span></div>
+ <div class="field"><label for="heels">Heel design</label><select id="heels"></select></div>
+ <div class="field">
+  <div class="rangehead"><label for="heelHeight">Heel height</label><span class="value" id="heelHeightValue">10 cm</span></div>
+  <input type="range" id="heelHeight" min="0" max="20" step=".5" value="10">
+  <div class="range-note"><span>Flat · 0 cm</span><span>Extreme · 20 cm</span></div>
+ </div>
+ <div class="grid2">
+  <div class="field"><label for="jewelry">Jewellery</label><select id="jewelry"><option>Diamond jewellery</option><option>Gold jewellery</option><option>Pearl jewellery</option><option>Statement jewellery</option><option>Vintage jewellery</option><option>Minimalist jewellery</option><option>No jewellery</option><option>Art Deco diamonds</option><option>Layered gold chains</option><option>Crystal statement pieces</option><option>Delicate rose gold</option><option>Oversized pearl set</option><option>Vintage brooch and earrings</option><option>Bold sculptural silver</option></select></div>
+  <div class="field"><label for="setting">Background</label><select id="setting"><option>Luxury fashion studio</option><option>Elegant penthouse</option><option>Parisian street</option><option>Luxury hotel</option><option>Fashion runway</option><option>Modern office</option><option>Beach resort</option><option>Glamorous dressing room</option><option>Vintage photography studio</option><option>Neutral photography backdrop</option><option>Art Deco hotel suite</option><option>Rooftop at golden hour</option><option>Classic Hollywood set</option><option>Modern luxury apartment</option><option>Botanical conservatory</option><option>Grand marble foyer</option><option>Minimalist white studio</option><option>Sunlit dressing suite</option><option>Paris couture atelier</option></select></div>
+ </div>
+ <div class="section"><strong>06 · Poses</strong><span>80 OPTIONS</span></div>
+ <div class="field"><label for="pose">Pose / composition</label><select id="pose"></select></div>
+ <div class="section"><strong>07 · Generation settings</strong><span>AI HORDE</span></div>
+ <div class="grid2">
+  <div class="field"><label for="model">AI model</label><select id="model"><option>AlbedoBase XL (SDXL)</option><option>Deliberate</option><option>Dreamshaper</option></select></div>
+  <div class="field"><label for="size">Image size</label><select id="size"><option value="512,512">512 × 512</option><option value="512,768">512 × 768</option><option value="768,512">768 × 512</option></select></div>
+ </div>
+ <div class="field"><label for="extra">Additional prompt details</label><textarea id="extra" placeholder="Lighting, camera lens, accessories, fabric, colour palette..."></textarea></div>
+ <div class="field"><label for="negative">Negative prompt</label><textarea id="negative" placeholder="blurry, distorted anatomy, low quality..."></textarea></div>
+ <label class="note"><input type="checkbox" id="matureFlag" style="width:auto;vertical-align:middle"> Mark request as potentially mature-rated (does not bypass AI Horde or worker moderation).</label>
+ <button class="secondary" id="previewPrompt" style="width:100%;margin-top:12px">Preview full prompt</button>
+ <textarea id="promptPreview" class="hidden" readonly style="margin-top:8px"></textarea>
+ <button class="primary" id="generate">✧ Generate Character</button>
+</section>
+<section class="panel" id="rightPanel">
+ <h2>Image Studio</h2><p class="sub">Your generated fashion and beauty images appear here.</p>
+ <div class="result"><div class="empty" id="empty"><span>✧</span><p><b>Your next creation awaits</b></p><p class="note">Customise your character and generate an image.</p></div><img id="result" alt="Generated image"></div>
+ <div class="actions"><button class="secondary" id="download" disabled>↓ Download</button><button class="secondary" id="toEditor" disabled>◈ Send to Editor</button></div>
+ <div class="status" id="status"><b id="statusTitle">Generating</b><p id="statusText" class="note">Contacting AI Horde</p><div class="progress"><div class="bar" id="bar"></div></div></div>
+ <div class="section"><strong>Image Editor · Img2Img</strong><span>TRANSFORM</span></div>
+ <div class="field"><label class="drop" for="upload"><span id="dropText">＋ Upload PNG, JPG or WebP</span><img id="sourcePreview" alt="Source preview"><input id="upload" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
+ <div class="field"><label for="editPrompt">Editing instructions</label><textarea id="editPrompt" placeholder="Change her hairstyle, outfit, makeup, background..."></textarea></div>
+ <div class="field"><div class="rangehead"><label for="denoise">Denoising strength</label><span class="value" id="denoiseValue">0.65</span></div><input type="range" id="denoise" min=".2" max=".9" step=".05" value=".65"><div class="range-note"><span>Preserve original</span><span>Major transformation</span></div></div>
+ <button class="primary" id="editGenerate">◈ Transform Image</button>
+ <p class="note">Designed for adult character and fashion concepts. API access, available models and worker moderation are controlled by AI Horde.</p>
+</section>
+</div>
+<footer>HORDE STUDIO · BEAUTY & FASHION EDITION · Powered by AI Horde</footer>
+</div>
+<canvas id="canvas" class="hidden"></canvas>
+<script>
+const $=id=>document.getElementById(id),API="https://aihorde.net/api/v2";
+let busy=false,controller=null,source=null,resultURL=null,selectedOutfit=0;
+const bodyDefs=[
+ ["Bust fullness","Petite","Very full"],["Hip width","Narrow","Wide"],
+ ["Waist definition","Natural","Defined"],["Buttock fullness","Petite","Very full"],
+ ["Overall curves","Slender","Curvaceous"],["Height impression","Petite","Tall"],
+ ["Shoulder width","Narrow","Broad"],["Leg length","Shorter","Longer"],
+ ["Bust projection","Subtle","Pronounced"],["Torso length","Shorter","Longer"],
+ ["Thigh fullness","Slender","Full"],["Calf definition","Soft","Defined"],
+ ["Arm definition","Soft","Athletic"],["Neck length","Shorter","Longer"],
+ ["Posture","Relaxed","Upright"],["Overall silhouette","Compact","Elongated"]
+];
+bodyDefs.forEach((d,i)=>{
+ const wrap=document.createElement("div");wrap.className="field";
+ wrap.innerHTML=`<div class="rangehead"><label>${d[0]}</label><span class="value" id="bodyV${i}">50%</span></div><input type="range" min="0" max="100" value="50" id="body${i}"><div class="range-note"><span>${d[1]}</span><span>${d[2]}</span></div>`;
+ $("bodyControls").appendChild(wrap);
+ $("body"+i).addEventListener("input",e=>$("bodyV"+i).textContent=e.target.value+"%");
+});
+const hairstyles=[
+"Marilyn Monroe — short platinum blonde pin curls","Marilyn Monroe — classic soft Hollywood waves","Marilyn Monroe — voluminous side-parted curls","Long Hollywood waves","Short vintage finger waves","Platinum blonde bombshell blowout","Long straight glass hair","Waist-length straight hair","Floor-length straight hair","Long layered butterfly cut",
+"Voluminous 1990s supermodel blowout","Big bouncy barrel curls","Tight spiral curls","Loose romantic curls","Natural afro","Defined coily curls","Long bohemian waves","Beach waves","Mermaid waves","Deep side-part waves",
+"High sleek ponytail","Voluminous high ponytail","Low polished ponytail","Bubble ponytail","Braided high ponytail","Long French braid","Dutch twin braids","Fishtail braid","Crown braid updo","Romantic braided bun",
+"Classic French twist","Elegant chignon","Messy romantic bun","Sleek ballerina bun","High sculpted bun","Half-up half-down curls","Half-up bow hairstyle","Curtain bangs with long layers","Full fringe with long hair","Side-swept fringe",
+"Shoulder-length lob","Sleek chin-length bob","Curly bob","Asymmetrical bob","Pixie cut","Long shag haircut","Feathered Farrah Fawcett layers","Vintage victory rolls","Glamorous bouffant","Sculptural editorial updo"
+];
+const heels=[
+"Classic pointed-toe stiletto pumps","D'Orsay pumps","Platform stilettos","Peep-toe platform heels","Ankle-strap heels","T-strap heels","Slingback pumps","Mary Jane heels","Kitten heels","Block heels","Wedge heels","Clear lucite heels","Metallic evening sandals","Strappy high-heel sandals","Thigh-high heeled boots","Knee-high heeled boots","Over-the-knee stiletto boots","Lace-up heeled boots","Cone heels","Sculptural architectural heels"
+];
+const outfits=[
+"Classic red cocktail dress","Little black dress","White satin evening gown","Royal blue couture gown","Pink satin dress","Emerald evening gown","Gold sequin dress","Silver metallic gown","Black pencil dress","White executive pantsuit",
+"Pink skirt suit","Black power suit","Luxury office dress","Silk blouse and pencil skirt","Designer jumpsuit","Parisian tailored ensemble","Vintage pin-up dress","Polka-dot swing dress","1950s glamour dress","Hollywood red-carpet gown",
+"Mermaid evening gown","Grand ball gown","Feather-trim couture dress","Lace evening dress","Velvet gown","Satin slip dress","Off-shoulder formal gown","One-shoulder evening dress","Cocktail mini dress","Sequin party mini dress",
+"Luxury resort ensemble","White summer dress","Floral summer dress","Designer swimwear with cover-up","Classic one-piece swimsuit","Resort bikini with wrap","Corset-inspired couture dress","Structured bustier and evening skirt","Silk robe and elegant nightwear","Fashion corset and tailored trousers",
+"Designer leather jacket and skirt","Gothic couture gown","Pastel princess dress","Fairytale ball gown","Avant-garde runway ensemble","Sculptural runway dress","Designer tracksuit","Cashmere sweater and skirt","Winter coat and boots ensemble","Formal wedding guest dress",
+"Champagne satin column gown","Black velvet off-shoulder gown","Plunging-neckline evening gown","High-slit formal gown","Crystal-embellished couture gown","Beaded Art Deco evening dress","Strapless sweetheart ball gown","Draped Grecian evening gown","Asymmetric draped gown","Long-sleeve fitted formal gown",
+"White tailored tuxedo dress","Double-breasted formal suit","Satin lapel evening pantsuit","Wide-leg palazzo evening set","Sequined blazer and trousers","Opera-length evening gown","Cape-sleeve formal gown","Backless evening gown","Illusion-panel couture gown","Corset-waist satin gown",
+"Structured peplum cocktail dress","Lace-trim evening mini dress","Tulle layered formal dress","Feather-hem cocktail dress","Metallic lamé gown","Red-carpet sculpted gown","Two-piece formal skirt set","Luxury satin co-ord set","Elegant fitted knit dress","Designer evening romper",
+
+// 25 vintage-inspired looks
+"1950s bullet bra with high-waisted pencil skirt","Vintage bullet bra with circle skirt","Longline bullet bra and fitted capri trousers","1940s satin bullet bra with tailored trousers","1950s pointed-cup bra and cinched-waist dress",
+"Vintage girdle, bullet bra and seamed stockings ensemble","Classic pin-up playsuit with sweetheart neckline","Polka-dot halter-neck swing dress","1950s wiggle dress with matching belt","1940s tea dress with nipped-in waist",
+"1950s strapless cocktail dress with full skirt","Vintage satin corset with pencil skirt","Retro bustier top with high-waisted cigarette pants","1950s fitted cardigan and pencil skirt set","1940s tailored skirt suit with peplum jacket",
+"Vintage balconette bra with high-waisted briefs and robe","1950s swimsuit with structured sweetheart bodice","Retro gingham halter dress","1960s mod mini dress with go-go boots","1960s monochrome shift dress",
+"1970s wrap dress with flared sleeves","1970s satin disco blouse and flared trousers","Vintage lace-trim slip dress","Old-Hollywood satin negligee and matching robe","Classic pin-up pencil skirt, blouse and waist belt",
+
+// 25 modern sexy and revealing fashion looks
+"Strapless sculpted mini dress with corset seams","Satin bodycon dress with thigh-high slit","Deep-V evening dress with tailored waist","Backless halter-neck maxi dress","One-shoulder cut-out midi dress",
+"Sheer-sleeve fitted cocktail dress with opaque lining","Lace-up corset top with tailored mini skirt","Structured bustier top with high-waisted trousers","Off-shoulder ruched mini dress","Satin cowl-neck slip dress",
+"High-neck open-back evening dress","Asymmetric cut-out bodysuit with wide-leg trousers","Fitted blazer mini dress with statement belt","Metallic wrap mini dress","Halter-neck crop top with high-waisted maxi skirt",
+"Two-piece bandeau top and flowing evening skirt","Long-sleeve bodycon dress with side cut-outs","Sculpted sweetheart mini dress","Sheer-overlay evening gown with opaque bodice and skirt","Strappy satin evening dress with open back",
+"Plunging-neckline tailored jumpsuit","High-slit column skirt with fitted off-shoulder top","Rhinestone-embellished party mini dress","Satin corset dress with lace-up back","Modern glamour co-ord with fitted top and pencil skirt"
+];
+const poses=[
+"Full-length standing fashion portrait","Confident hands-on-hips pose","Walking runway stride","Mid-stride runway turn","Elegant seated pose on chair","Seated sideways on sofa","Over-the-shoulder glance","Three-quarter fashion portrait","Direct camera gaze","Looking away from camera",
+"One hand resting at waist","Both hands gently clasped","Arms relaxed at sides","One hand touching hair","Adjusting an earring","Holding a clutch bag","Holding a wide-brim hat","Walking down grand staircase","Standing beside a column","Leaning lightly against a wall",
+"Leg-forward editorial stance","Crossed-leg standing pose","Kneeling editorial fashion pose","Reclining elegantly on chaise","Sitting at vanity","Looking into dressing-room mirror","Back-facing full-length pose","Profile silhouette pose","Dynamic dress-swish pose","Turning with flowing hair",
+"Hands lightly on lapels","Adjusting jacket cuffs","One foot on low step","Seated with crossed ankles","Walking toward camera","Standing beneath soft window light","Classic vintage pin-up stance","Hollywood red-carpet pose","High-fashion angular pose","Natural candid walking pose"
+];
+const makeupCategories={
+"Foundation / complexion":["Sheer skin tint","Natural satin foundation","Soft matte foundation","Dewy luminous foundation","Velvet matte complexion","Radiant glow foundation","Full coverage glam base","Light coverage natural base","Warm golden undertone","Cool porcelain undertone","Neutral beige undertone","Olive undertone","Peach undertone","Rosy undertone","Airbrushed finish","Soft-focus finish","Glass-skin finish","Fresh hydrated finish","Velvet-blur finish","Sculpted complexion","Sun-kissed complexion","Editorial pale finish","Bronzed complexion","Barely-there base","Polished studio base","HD photographic base","Classic Hollywood base","Natural freckled finish"," luminous satin finish","High-glam flawless base"],
+"Eyeshadow":["Champagne shimmer","Soft taupe matte","Bronze metallic","Rose-gold shimmer","Copper smoky eye","Classic brown smoky eye","Charcoal smoky eye","Black smoky eye","Soft pink wash","Mauve gradient","Plum shimmer","Burgundy halo eye","Emerald shimmer","Sapphire blue accent","Lavender pastel","Silver metallic","Gold foil effect","Cut crease neutral","Soft cut crease","Halo eye champagne","Matte beige transition","Warm terracotta blend","Cool grey blend","Peach monochrome","Vintage pastel blue","Dramatic glitter lid","Satin ivory highlight","Chocolate gradient","Sunset coral blend","Editorial graphic colour"],
+"Eyeliner":["Thin black lash line","Classic black wing","Sharp cat-eye wing","Soft brown liner","Smudged kohl liner","Tightlined upper lash","Tightlined upper and lower","Double wing liner","Foxy elongated liner","Puppy eyeliner","Smoky pencil liner","Waterline nude liner","Waterline black liner","Navy blue wing","Emerald green wing","Burgundy liner","Metallic gold liner","Silver graphic liner","Floating crease liner","Negative-space graphic liner","Retro 1960s liner","Rounded doe-eye liner","Micro wing","Bold dramatic wing","Soft diffused liner","Two-tone liner","Inner-corner accent","Extended outer corner","Lower-lash smoky liner","No visible eyeliner"],
+"Mascara / lashes":["Natural lengthening mascara","Soft volume mascara","Dramatic volume mascara","Waterproof black mascara","Brown defining mascara","Separated fluttery lashes","Wispy false lashes","Full strip lashes","Doll-eye lashes","Outer-corner lashes","Cat-eye lash shape","Natural individual clusters","Dense glamorous lashes","Feathered lashes","Long curled lashes","Lower-lash definition","Subtle half lashes","Retro pin-up lashes","Dramatic editorial lashes","Soft everyday lashes","Deep black glossy lashes","Brown-black lashes","Flared lashes","Rounded lash effect","Spiky modern lashes","Lightweight faux lashes","Double-layer volume","Fine separated lashes","Lifted natural lashes","Bare lashes"],
+"Lipstick":["Classic blue-red lipstick","Cherry red satin","Ruby red matte","Deep crimson","Burgundy wine","Rose pink satin","Dusty rose matte","Nude peach","Warm caramel nude","Cool beige nude","Mauve lipstick","Berry stain","Raspberry pink","Coral cream","Bright fuchsia","Soft baby pink","Rosewood lipstick","Chocolate brown","Terracotta","Brick red","Plum lipstick","Glossy clear lip","Pink nude gloss","Peach gloss","Champagne shimmer gloss","Velvet red","Soft blurred lip","Classic pin-up red","Two-tone ombre lip","Natural tinted balm"],
+"Blush":["Soft baby pink blush","Peach blush","Warm apricot blush","Dusty rose blush","Mauve blush","Coral blush","Berry flush","Soft terracotta blush","Warm cinnamon blush","Cool pink flush","Draped rose blush","Sunset peach blush","Subtle nude blush","Bright poppy blush","Vintage pink blush","Creamy rose blush","Matte peach blush","Shimmering champagne blush","High cheekbone blush","Across-the-nose flush","Soft lavender blush","Muted plum blush","Bronzed rose blush","Watercolour pink blush","Soft coral cream","Warm rose powder","Neutral beige blush","Bright raspberry blush","Sculpted blush placement","Barely-there blush"],
+"Highlighter / contour":["Subtle champagne highlight","Pearl highlight","Golden glow highlight","Rose-gold highlight","Icy silver highlight","Wet-look cheek highlight","Soft satin highlight","Strong editorial highlight","Natural cheek contour","Soft warm contour","Cool taupe contour","Sculpted cheek contour","Bronzed contour","Light jaw definition","Defined cheekbones","Soft nose highlight","Cupid's bow highlight","Temple glow","Full luminous glow","Matte sculpting","Cream contour finish","Powder contour finish","Golden hour radiance","Pearlescent glow","Rosy radiance","Bronze goddess glow","Soft-focus sculpt","High-fashion strobing","Natural no-contour look","Classic Hollywood sculpt"]
+};
+
+// Expanded collections: a second set of options for every major selector.
+hairstyles.push(
+"Marilyn-inspired platinum pageboy","Marilyn-inspired curled shoulder-length bob","1950s sculpted blonde pompadour","Vintage brushed-out pin curls","Victory-roll updo with curled ends",
+"Long centre-parted waves","Deep side-parted sleek waves","Polished S-wave set","Long feathered layers","Voluminous 1980s curls",
+"Soft layered shoulder-length cut","French-girl tousled bob","Italian bob with curved ends","Blunt collarbone lob","Long sleek high ponytail with wrap",
+"Low ponytail with face-framing tendrils","Braided crown with loose curls","Rope braid ponytail","Waterfall braid with waves","Bohemian fishtail side braid",
+"Double French braids into bun","Sleek low braided bun","Twisted French chignon","Knotted low updo","Textured French roll",
+"Side-swept Hollywood updo","Curled vintage pageboy","Short sculpted finger-wave bob","Long retro brushed curls","Flipped-under 1960s bob",
+"Feathered 1970s blowout","Wispy curtain fringe with waves","Bottleneck bangs with layers","Long butterfly layers with curtain fringe","Sculpted wet-look bob",
+"Glossy shoulder-length waves","Soft romantic updo with tendrils","High-volume half-up bouffant","Bow-adorned ponytail","Ribbon-woven braid",
+"Pearl-pinned chignon","Crystal hairpiece updo","Sleek centre-parted bun","Side-parted low bun","Curly high puff",
+"Defined twist-out","Long natural coils","Shoulder-length spiral curls","Layered wolf cut","Elegant sculptural braided updo"
+);
+heels.push(
+"Stiletto court shoes with ankle strap","Platform Mary Jane heels","Patent leather pumps","Satin bridal stilettos","Crystal-embellished sandals",
+"Rhinestone ankle-strap heels","Lace-up gladiator heels","Open-toe mule heels","Closed-toe mule heels","Square-toe sandals",
+"Pointed slingback stilettos","Bow-detail pumps","Pearl-embellished heels","Feather-trim evening sandals","Metallic platform pumps",
+"Transparent-strap sandals","Tapered kitten-heel slingbacks","Chunky platform boots","Western heeled ankle boots","Sculpted heel sandals"
+);
+poses.push(
+"Seated on a velvet chaise with upright posture","Standing with one hand on hip and one relaxed","Walking with a flowing coat","Looking back over shoulder while walking","Seated at a café table",
+"Standing in profile with chin slightly raised","Hands resting lightly on a balcony rail","Holding sunglasses beside face","Adjusting a bracelet","Fastening a shoe in a seated fashion pose",
+"Elegant crossed-arm portrait","Hands gently framing the face","One hand resting on a chair back","Seated sideways with ankles crossed","Standing with a handbag at side",
+"Walking through a hotel lobby","Turning toward a soft light source","Looking down at a clutch","One hand lifting a skirt hem slightly for movement","Standing beside a full-length mirror",
+"Seated at a dressing table","Applying lipstick at a vanity","Adjusting a jacket over the shoulders","Holding a fashion magazine","Leaning against a grand staircase rail",
+"Walking along a runway in profile","Paused mid-turn on runway","Arms softly extended to show sleeve detail","Hands clasped behind back","Sitting elegantly on a low bench",
+"Standing with one knee softly bent","Looking over shoulder in a studio portrait","Seated with one elbow on chair arm","Holding a bouquet at waist height","Standing beneath an architectural arch",
+"Walking in a garden pathway","Posing beside a tall window","Seated on a staircase step","Straight-on beauty portrait with relaxed shoulders","Three-quarter seated portrait"
+);
+
+// Create 130 additional outfit combinations from 13 fashion silhouettes × 10 finishes.
+const extraOutfitTops=[
+"Tailored corset bodice","Satin camisole","Structured bustier top","Off-shoulder blouse","One-shoulder fitted top",
+"Long-sleeve mesh-overlay top","Square-neck fitted top","Halter-neck evening top","Silk wrap blouse","Peplum evening jacket",
+"Strapless sculpted bodice","Lace-trim camisole","Cropped tuxedo jacket"
+];
+const extraOutfitBottoms=[
+"with a high-waisted pencil skirt","with a flowing maxi skirt","with tailored wide-leg trousers","with a fitted mini skirt","with a draped satin midi skirt",
+"with a high-waisted palazzo skirt","with a sleek column skirt","with tailored cigarette pants","with a layered tulle skirt","with a dramatic evening train"
+];
+const extraOutfitFinishes=[
+" in black satin"," in ivory crepe"," in ruby velvet"," in champagne silk"," in midnight blue",
+" with crystal detailing"," with pearl accents"," with a subtle metallic finish"," with a lace overlay"," with sculptural draping"
+];
+const generatedOutfits=[];
+extraOutfitTops.forEach((top,i)=>extraOutfitBottoms.forEach((bottom,j)=>{
+ const finish=extraOutfitFinishes[(i+j)%extraOutfitFinishes.length];
+ generatedOutfits.push(top+" "+bottom+finish);
+}));
+outfits.push(...generatedOutfits);
+
+// Add 30 more makeup selections to each of the seven makeup categories.
+const extraMakeup={
+"Foundation / complexion":["Soft radiant skin finish","Natural matte HD base","Hydrating luminous base","Satin airbrush complexion","Light-reflecting foundation","Sheer dewy base","Long-wear velvet base","Warm honey undertone","Cool ivory undertone","Neutral sand undertone","Golden olive undertone","Soft peach undertone","Rosy beige undertone","Balanced neutral complexion","Subtle freckle detail","Soft bronzed complexion","Fresh editorial complexion","Refined pore-softening finish","Natural skin texture","Photographic soft-focus base","Cream foundation finish","Powder-set satin base","Demi-matte complexion","Luminous cheek-centred glow","Soft sculpted base","Classic studio complexion","Sunlit skin finish","Polished natural complexion","Warm beige undertone","Cool rose undertone"],
+"Eyeshadow":["Soft bronze wash","Champagne inner-corner shimmer","Matte caramel crease","Rosewood smoky blend","Copper foil lid","Taupe halo effect","Soft plum smoky eye","Deep espresso gradient","Golden olive shimmer","Satin peach lid","Pale pink shimmer","Muted mauve matte","Icy blue accent","Teal metallic accent","Amethyst shimmer","Antique gold foil","Soft silver wash","Warm brown cut crease","Graphic black-and-gold look","Soft lilac gradient","Terracotta smoky blend","Cocoa matte eye","Rose champagne shimmer","Pearl-white lid","Subtle bronze halo","Classic 1950s neutral eye","1960s pastel lid","Soft emerald accent","Dramatic charcoal blend","Monochrome rose eye"],
+"Eyeliner":["Fine espresso wing","Soft charcoal wing","Classic kitten flick","Double-ended cat eye","Subtle brown tightline","Smudged bronze liner","Deep plum liner","Soft navy liner","Olive green liner","Copper metallic liner","Rose-gold liner","White waterline accent","Champagne inner-corner line","Extended graphic wing","Floating outer-corner line","Retro pin-up flick","1960s lower-lash accent","Soft shadow liner","Diffused smoky wing","Precision liquid wing","Tiny inner-corner flick","Lash-enhancing tightline","Deep burgundy pencil","Satin black pencil","Taupe lower-lash line","Soft grey wing","Dramatic elongated wing","Negative-space double line","Subtle outer-corner shading","Barely-there brown liner"],
+"Mascara / lashes":["Soft brown lengthening lashes","Jet-black curled lashes","Natural separated upper lashes","Subtle lower-lash mascara","Wispy outer-corner clusters","Soft doll-eye clusters","Lightweight cat-eye strip","Flared half lashes","Long tapered lashes","Feather-light volume","Defined individual lashes","Classic pin-up false lashes","Vintage rounded lashes","Soft flutter lashes","Dramatic winged lashes","Dense but separated lashes","Glossy black lash finish","Natural lifted lashes","Fine outer-corner accents","Long lower-lash definition","Soft black-brown lashes","Airy volume lashes","Tapered corner lashes","Full-length wispy strip","Layered editorial lashes","Softly curled natural lashes","Subtle lash extensions","Feathered false lashes","Classic glamour lashes","Minimal mascara finish"],
+"Lipstick":["Soft rose satin","Classic scarlet cream","Warm nude rose","Cool pink nude","Caramel rose gloss","Muted berry satin","Deep cherry lacquer","Bright coral satin","Vintage tomato red","Soft mauve gloss","Peach beige cream","Rosewood satin","Plum berry cream","Brown-rose nude","Pinky beige gloss","Raspberry satin","Brick-red cream","Wine-stain finish","Soft terracotta nude","Cinnamon rose","Sheer cherry balm","Pink pearl gloss","Neutral cocoa lipstick","Classic Hollywood crimson","Dusty pink cream","Warm coral gloss","Deep rose matte","Soft cranberry tint","Nude peach satin","Clear glass gloss"],
+"Blush":["Soft rose cream blush","Warm peach powder","Muted berry cream","Cool petal-pink blush","Apricot satin blush","Neutral rose powder","Soft coral draping","Warm nude flush","Vintage rose cheek","Subtle bronze blush","Pink-beige cream blush","Mauve satin blush","Raspberry sheer flush","Peachy nude blush","Soft cinnamon flush","Rose-gold sheen blush","Cool berry powder","Warm terracotta cream","Champagne-pink glow","Natural cheek tint","Soft plum flush","Sun-kissed apricot","Muted coral powder","Rosy beige flush","Fresh pink cream","Soft sculpted rose","Neutral peach tint","Warm rose cream","Dewy berry tint","Barely-there blush"],
+"Highlighter / contour":["Soft pearl cheek highlight","Champagne cream highlight","Golden cheekbone glow","Rose quartz highlight","Subtle nose bridge highlight","Satin brow-bone highlight","Warm cream contour","Cool sculpting powder","Soft jawline contour","Natural temple definition","Diffused cheek sculpt","Pearlescent cupid's bow","Wet-look collarbone glow","Golden shoulder highlight","Soft-focus cheek glow","Matte nose contour","Gentle forehead warmth","Balanced facial sculpt","Bronze satin highlight","Icy pearl strobe","Rose-gold cheek glow","Natural no-highlight finish","Soft editorial contour","Warm taupe cheek sculpt","Subtle chin highlight","Classic Hollywood cheek glow","Light-catching cheek finish","Velvet matte sculpt","Soft luminous complexion finish","Minimal contour definition"]
+};
+Object.entries(extraMakeup).forEach(([category,items])=>{
+ const target=makeupCategories[category];
+ if(target)target.push(...items);
+});
+
+function fillSelect(id,arr){const s=$(id);arr.forEach(v=>{const o=document.createElement("option");o.textContent=v;o.value=v;s.appendChild(o)})}
+fillSelect("hairStyle",hairstyles);fillSelect("heels",heels);fillSelect("pose",poses);
+Object.entries(makeupCategories).forEach(([name,options],i)=>{
+ const wrap=document.createElement("div");wrap.className="field";
+ const id="makeup"+i;wrap.innerHTML=`<label for="${id}">${name} · ${options.length} styles</label><select id="${id}"></select>`;
+ $("makeupControls").appendChild(wrap);fillSelect(id,options);
+});
+function renderOutfits(filter=""){
+ $("outfits").innerHTML="";
+ const matches=outfits.map((name,index)=>({name,index})).filter(x=>x.name.toLowerCase().includes(filter.toLowerCase()));
+ matches.forEach(({name,index})=>{
+  const b=document.createElement("button");b.className="outfit"+(selectedOutfit===index?" selected":"");
+  const group = index < 80 ? "Original collection" : index < 105 ? "Vintage-inspired" : index < 130 ? "Modern glamour" : "Expanded couture collection";
+  b.innerHTML=`<b>${String(index+1).padStart(3,"0")}. ${name}</b><small>${group}</small>`;
+  b.addEventListener("click",()=>{selectedOutfit=index;renderOutfits($("outfitSearch").value)});
+  $("outfits").appendChild(b);
+ });
+ $("outfitCount").textContent=`${outfits.length} DESIGNS · ${selectedOutfit+1} SELECTED`;
+}
+renderOutfits();$("outfitSearch").addEventListener("input",e=>renderOutfits(e.target.value));
+$("heelHeight").addEventListener("input",e=>$("heelHeightValue").textContent=e.target.value+" cm");
+$("goldenRatio").addEventListener("input",e=>$("goldenRatioValue").textContent=e.target.value+"%");
+$("denoise").addEventListener("input",e=>$("denoiseValue").textContent=Number(e.target.value).toFixed(2));
+$("apiKey").value=localStorage.getItem("horde_beauty_key")||"0000000000";
+$("apiKey").addEventListener("change",()=>localStorage.setItem("horde_beauty_key",$("apiKey").value.trim()));
+function headers(){return{apikey:$("apiKey").value.trim()||"0000000000","Content-Type":"application/json","Client-Agent":"HordeStudioBeauty:2.0:browser"}}
+async function api(url,options={}){const r=await fetch(url,{...options,headers:{...headers(),...options.headers},signal:controller?.signal});if(!r.ok){const e=await r.json().catch(()=>({}));throw Error(e.message||e.error||"API error "+r.status)}return r.json()}
+async function loadModels(){try{const ms=await api(API+"/status/models?type=image");const s=$("model"),old=s.value;const usable=ms.filter(m=>m.name).sort((a,b)=>(a.queued||0)-(b.queued||0));if(!usable.length)return;s.innerHTML="";usable.forEach(m=>{const o=document.createElement("option");o.value=m.name;o.textContent=m.name;s.appendChild(o)});if(usable.some(m=>m.name===old))s.value=old}catch(e){console.info("Model discovery unavailable",e)}}
+loadModels();
+function band(v,a,b,c){return v<34?a:v<68?b:c}
+function buildPrompt(){
+ const body=[
+ "Bust: "+band(+$("body0").value,"petite bust","full bust","very full bust"),
+ "Hips: "+band(+$("body1").value,"narrow hips","balanced hips","wide hips"),
+ "Waist: "+band(+$("body2").value,"natural waist","defined waist","very defined waist"),
+ "Buttocks: "+band(+$("body3").value,"petite proportions","curved proportions","very full curvy proportions"),
+ "Figure: "+band(+$("body4").value,"slender figure","curvy figure","very curvaceous figure"),
+ "Height: "+band(+$("body5").value,"petite stature","average-tall stature","tall stature"),
+ "Shoulders: "+band(+$("body6").value,"narrow shoulders","balanced shoulders","broad shoulders"),
+  "Leg proportions: "+band(+$("body7").value,"shorter legs","balanced leg proportions","long legs"),
+ "Bust projection: "+band(+$("body8").value,"subtle projection","balanced projection","pronounced projection"),
+ "Torso: "+band(+$("body9").value,"shorter torso","balanced torso","longer torso"),
+ "Thighs: "+band(+$("body10").value,"slender thighs","balanced thighs","full thighs"),
+ "Calves: "+band(+$("body11").value,"soft calf shape","balanced calves","defined calves"),
+ "Arms: "+band(+$("body12").value,"soft arm definition","balanced arms","defined arms"),
+ "Neck: "+band(+$("body13").value,"shorter neck","balanced neck length","longer neck"),
+ "Posture: "+band(+$("body14").value,"relaxed posture","natural posture","upright poised posture"),
+ "Silhouette: "+band(+$("body15").value,"compact silhouette","balanced silhouette","elongated silhouette")
+ ];
+ const makeup=Object.keys(makeupCategories).map((k,i)=>k+": "+$("makeup"+i).value);
+ return [
+ "High-quality professional fashion photograph of a beautiful adult woman aged 21 or older, clearly mature adult appearance.",
+ body.join(". ")+".",
+ "Hairstyle: "+$("hairStyle").value+". Hair colour: "+$("hairColor").value+". Eye colour: "+$("eyes").value+". Facial styling: "+$("face").value+".",
+ "Facial proportion styling: "+(+$("goldenRatio").value<34?"natural individual facial proportions":+$("goldenRatio").value<68?"balanced facial proportions with gentle symmetry":"highly harmonious, balanced facial proportions inspired by classical golden-ratio aesthetics")+".",
+ "Makeup design: "+makeup.join("; ")+".",
+ "Outfit: "+outfits[selectedOutfit]+".",
+ "Footwear: "+$("heels").value+", heel height "+$("heelHeight").value+" centimetres.",
+ "Jewellery: "+$("jewelry").value+". Background: "+$("setting").value+".",
+ "Pose: "+$("pose").value+".",
+ $("extra").value,
+ "Professional fashion photography, sophisticated styling, detailed fabrics, realistic anatomy, carefully composed lighting."
+ ].filter(Boolean).join(" ");
+}
+$("previewPrompt").addEventListener("click",()=>{$("promptPreview").classList.toggle("hidden");$("promptPreview").value=buildPrompt()});
+function showStatus(title,detail,p=0){$("status").classList.add("show");$("statusTitle").textContent=title;$("statusText").textContent=detail;$("bar").style.width=p+"%"}
+function setBusy(v){busy=v;$("generate").disabled=v;$("editGenerate").disabled=v;$("generate").textContent=v?"Generating...":"✧ Generate Character";$("editGenerate").textContent=v?"Generating...":"◈ Transform Image"}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function generate(edit=false){
+ if(busy)return;const prompt=edit?$("editPrompt").value.trim():buildPrompt();
+ if(!prompt)return showStatus("Missing prompt","Enter a prompt or customise the character.",0);
+ if(edit&&!source)return showStatus("Missing image","Upload an image first.",0);
+ controller=new AbortController();setBusy(true);$("download").disabled=true;$("toEditor").disabled=true;
+ $("result").style.display="none";$("empty").style.display="block";
+ try{
+  const dims=$("size").value.split(",").map(Number);
+  const payload={prompt:prompt+($("negative").value.trim()?" ### "+$("negative").value.trim():""),models:[$("model").value],params:{width:edit?source.width:dims[0],height:edit?source.height:dims[1],steps:25,cfg_scale:7,n:1},r2:true,nsfw:$("matureFlag").checked};
+  if(edit){payload.source_image=source.base64;payload.source_processing="img2img";payload.params.denoising_strength=Number($("denoise").value)}
+  showStatus("Submitting request","Sending your character design to AI Horde...",5);
+  const job=await api(API+"/generate/async",{method:"POST",body:JSON.stringify(payload)});
+  if(!job.id)throw Error("No generation ID returned.");await poll(job.id);
+ }catch(e){showStatus(e.name==="AbortError"?"Cancelled":"Generation error",e.message,0)}
+ finally{setBusy(false);controller=null}
+}
+async function poll(id){
+ const start=Date.now();
+ while(Date.now()-start<20*60*1000){
+  await wait(3000);const c=await api(API+"/generate/check/"+id);
+  const wt=typeof c.wait_time==="number"?Math.ceil(c.wait_time/60)+" min":"Calculating";
+  showStatus(c.done?"Generation complete":"Waiting for workers",`Queue position: ${c.queue_position??"Unknown"} · Estimated wait: ${wt}`,c.done?95:Math.min(90,8+(Date.now()-start)/10000));
+  if(c.faulted)throw Error("Generation failed on the worker.");
+  if(c.done){const d=await api(API+"/generate/status/"+id);if(!d.generations?.length)throw Error("No image returned.");await displayImage(d.generations[0].img);showStatus("Image ready","Your image is ready.",100);return}
+ }
+ throw Error("Timed out after 20 minutes.");
+}
+async function displayImage(img){if(!img)throw Error("No image returned.");resultURL=/^https?:\/\//i.test(img)?img:(img.startsWith("data:")?img:"data:image/webp;base64,"+img);$("result").src=resultURL;$("result").style.display="block";$("empty").style.display="none";$("download").disabled=false;$("toEditor").disabled=false}
+$("generate").addEventListener("click",()=>generate(false));$("editGenerate").addEventListener("click",()=>generate(true));
+function resize(file){return new Promise((resolve,reject)=>{if(!["image/png","image/jpeg","image/webp"].includes(file.type))return reject(Error("Use PNG, JPG or WebP."));if(file.size>25*1024*1024)return reject(Error("Maximum image size is 25 MB."));const im=new Image(),url=URL.createObjectURL(file);im.onload=()=>{const sc=Math.min(512/im.width,512/im.height,1),rd=n=>Math.max(64,Math.min(512,Math.round(n/64)*64)),w=rd(im.width*sc),h=rd(im.height*sc),c=$("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);const data=c.toDataURL("image/webp",.9);URL.revokeObjectURL(url);resolve({base64:data.split(",")[1],data,width:w,height:h})};im.onerror=()=>{URL.revokeObjectURL(url);reject(Error("Could not read image"))};im.src=url})}
+$("upload").addEventListener("change",async e=>{try{source=await resize(e.target.files[0]);$("sourcePreview").src=source.data;$("sourcePreview").style.display="inline-block";$("dropText").style.display="none";showStatus("Image ready",source.width+" × "+source.height,0)}catch(err){showStatus("Upload error",err.message,0)}});
+$("download").addEventListener("click",async()=>{try{const r=await fetch(resultURL);if(!r.ok)throw Error("Image host does not permit browser download.");const u=URL.createObjectURL(await r.blob()),a=document.createElement("a");a.href=u;a.download="horde-beauty-"+Date.now()+".png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)}catch(e){showStatus("Download error",e.message,100)}});
+$("toEditor").addEventListener("click",async()=>{try{const r=await fetch(resultURL),blob=await r.blob();source=await resize(new File([blob],"generated.png",{type:blob.type||"image/png"}));$("sourcePreview").src=source.data;$("sourcePreview").style.display="inline-block";$("dropText").style.display="none";document.querySelector('[data-tab="edit"]').click();$("editPrompt").focus()}catch(e){showStatus("Editor error",e.message,0)}});
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{if(busy)return;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));const edit=b.dataset.tab==="edit";$("creator").classList.toggle("hidden",edit)}));
+</script>
+</body>
+</html>
